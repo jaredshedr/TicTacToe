@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import winDecider from './winDecider.js'
 
 const rowStyle = {
   display: "flex",
@@ -59,9 +60,13 @@ function Game() {
   );
 }
 
-function Square({ marker, setMarker }) {
+function Square({ index, marker, setMarker, setArrayMatrix, arrayMatrix }) {
   const [showMarker, setShowMarker] = useState(false);
   const [markerCopy, setMarkerCopy] = useState('')
+
+  let matrixCopy = arrayMatrix;
+  matrixCopy[index[0]][index[1]] = markerCopy;
+
   return (
     <div
       className="square"
@@ -69,6 +74,7 @@ function Square({ marker, setMarker }) {
       onClick={() => {
         setMarkerCopy(showMarker ? markerCopy : marker)
         setShowMarker(true);
+        setArrayMatrix(matrixCopy);
         setMarker(marker === "X" ? "O" : "X")
       }}
     >
@@ -79,8 +85,18 @@ function Square({ marker, setMarker }) {
 
 function Board() {
   const [marker, setMarker] = useState("X");
+  const [arrayMatrix, setArrayMatrix] = useState([[], [], []]);
+  const [winner, setWinner] = useState('');
 
-  function markerSwap() {}
+  useEffect(() => {
+    let finalWinner = winDecider(arrayMatrix)
+
+    if (finalWinner !== '') {
+      setWinner(finalWinner);
+    }
+
+  }, [marker])
+
 
   return (
     <div style={containerStyle} className="gameBoard">
@@ -88,24 +104,24 @@ function Board() {
         Next player: <span>{marker}</span>
       </div>
       <div id="winnerArea" className="winner" style={instructionsStyle}>
-        Winner: <span>None</span>
+        Winner: <span>{winner !== '' ? winner : "none"}</span>
       </div>
       <button style={buttonStyle}>Reset</button>
       <div style={boardStyle}>
         <div className="board-row" style={rowStyle}>
-          <Square marker={marker} setMarker={setMarker}/>
-          <Square marker={marker} setMarker={setMarker}/>
-          <Square marker={marker} setMarker={setMarker}/>
+          <Square index={[0, 0]} marker={marker} setMarker={setMarker} setArrayMatrix={setArrayMatrix} arrayMatrix={arrayMatrix}/>
+          <Square index={[0, 1]} marker={marker} setMarker={setMarker} setArrayMatrix={setArrayMatrix} arrayMatrix={arrayMatrix}/>
+          <Square index={[0, 2]} marker={marker} setMarker={setMarker} setArrayMatrix={setArrayMatrix} arrayMatrix={arrayMatrix}/>
         </div>
         <div className="board-row" style={rowStyle}>
-          <Square marker={marker} setMarker={setMarker}/>
-          <Square marker={marker} setMarker={setMarker}/>
-          <Square marker={marker} setMarker={setMarker}/>
+          <Square index={[1, 0]} marker={marker} setMarker={setMarker} setArrayMatrix={setArrayMatrix} arrayMatrix={arrayMatrix}/>
+          <Square index={[1, 1]} marker={marker} setMarker={setMarker} setArrayMatrix={setArrayMatrix} arrayMatrix={arrayMatrix}/>
+          <Square index={[1, 2]} marker={marker} setMarker={setMarker} setArrayMatrix={setArrayMatrix} arrayMatrix={arrayMatrix}/>
         </div>
         <div className="board-row" style={rowStyle}>
-          <Square marker={marker} setMarker={setMarker}/>
-          <Square marker={marker} setMarker={setMarker}/>
-          <Square marker={marker} setMarker={setMarker}/>
+          <Square index={[2, 0]} marker={marker} setMarker={setMarker} setArrayMatrix={setArrayMatrix} arrayMatrix={arrayMatrix}/>
+          <Square index={[2, 1]} marker={marker} setMarker={setMarker} setArrayMatrix={setArrayMatrix} arrayMatrix={arrayMatrix}/>
+          <Square index={[2, 2]} marker={marker} setMarker={setMarker} setArrayMatrix={setArrayMatrix} arrayMatrix={arrayMatrix}/>
         </div>
       </div>
     </div>
